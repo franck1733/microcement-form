@@ -14,6 +14,15 @@ const MicrocementForm = () => {
   });
   const [completed, setCompleted] = useState(false);
 
+  const stepImages = {
+    0: "/images/steps/step1-user-type.jpg",
+    1: "/images/steps/step2-project-type.jpg",
+    2: "/images/steps/step3-space.jpg",
+    3: "/images/steps/step4-area.jpg",
+    4: "/images/steps/step5-surface.jpg",
+    5: "/images/steps/step6-contact.jpg"
+  };
+
   const formSteps = [
     {
       question: "1. Who are you?",
@@ -102,10 +111,46 @@ const MicrocementForm = () => {
   }
 
   return (
-    <div style={{ maxWidth: 720, margin: "0 auto", padding: 20 }}>
-      <h3 style={{ marginBottom: 20 }}>{step.question}</h3>
+    <div style={{ maxWidth: 800, margin: "0 auto", padding: 20 }}>
+      {/* Avatar + question bubble */}
+      <div style={{ display: "flex", alignItems: "flex-start", gap: 16 }}>
+        <div style={{ width: 60, height: 60, borderRadius: "50%", overflow: "hidden" }}>
+          <img
+            src="/images/avatar.jpg"
+            alt="Assistant"
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        </div>
+        <div style={{
+          background: "#f0f4f8",
+          padding: 16,
+          borderRadius: 12,
+          flex: 1,
+          position: "relative"
+        }}>
+          <div style={{
+            position: "absolute",
+            top: 20,
+            left: -10,
+            width: 20,
+            height: 20,
+            background: "#f0f4f8",
+            transform: "rotate(45deg)"
+          }} />
+          <h3 style={{ margin: 0 }}>{step.question}</h3>
+        </div>
+      </div>
 
-      {/* Big clickable image answers */}
+      {/* Step image */}
+      <div style={{ marginTop: 20 }}>
+        <img
+          src={stepImages[currentStep]}
+          alt={`Step ${currentStep + 1}`}
+          style={{ width: "100%", borderRadius: 16, marginBottom: 20 }}
+        />
+      </div>
+
+      {/* Image options */}
       {(step.type === 'checkbox' || step.type === 'radio') && (
         <div style={{
           display: "flex",
@@ -133,7 +178,7 @@ const MicrocementForm = () => {
                     handleCheckboxChange(step.field, option);
                   } else {
                     handleInputChange(step.field, option);
-                    setTimeout(() => handleNextStep(), 300); // delay for feedback
+                    setTimeout(() => handleNextStep(), 300);
                   }
                 }}
                 style={{
@@ -195,7 +240,7 @@ const MicrocementForm = () => {
         </div>
       )}
 
-      {/* Navigation buttons */}
+      {/* Navigation */}
       <div style={{ display: "flex", justifyContent: "space-between", marginTop: 30 }}>
         <button onClick={handlePrevStep} disabled={currentStep === 0}>Back</button>
         {step.type !== 'radio' && (
