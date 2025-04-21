@@ -14,15 +14,6 @@ const MicrocementForm = () => {
   });
   const [completed, setCompleted] = useState(false);
 
-  const stepImages = {
-    0: "/images/steps/step1-user-type.jpg",
-    1: "/images/steps/step2-project-type.jpg",
-    2: "/images/steps/step3-space.jpg",
-    3: "/images/steps/step4-area.jpg",
-    4: "/images/steps/step5-surface.jpg",
-    5: "/images/steps/step6-contact.jpg"
-  };
-
   const formSteps = [
     {
       question: "1. Who are you?",
@@ -112,18 +103,13 @@ const MicrocementForm = () => {
 
   return (
     <div style={{ maxWidth: 720, margin: "0 auto", padding: 20 }}>
-      <img
-        src={stepImages[currentStep]}
-        alt={`Step ${currentStep + 1}`}
-        style={{ width: "100%", borderRadius: 12, marginBottom: 20 }}
-      />
       <h3 style={{ marginBottom: 20 }}>{step.question}</h3>
 
-      {/* Clickable image answers */}
+      {/* Big clickable image answers */}
       {(step.type === 'checkbox' || step.type === 'radio') && (
         <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+          display: "flex",
+          flexDirection: "column",
           gap: 16,
           marginBottom: 20
         }}>
@@ -142,26 +128,29 @@ const MicrocementForm = () => {
             return (
               <div
                 key={option}
-                onClick={() =>
-                  step.type === 'checkbox'
-                    ? handleCheckboxChange(step.field, option)
-                    : handleInputChange(step.field, option)
-                }
+                onClick={() => {
+                  if (step.type === 'checkbox') {
+                    handleCheckboxChange(step.field, option);
+                  } else {
+                    handleInputChange(step.field, option);
+                    setTimeout(() => handleNextStep(), 300); // delay for feedback
+                  }
+                }}
                 style={{
-                  border: isSelected ? '2px solid #007bff' : '1px solid #ccc',
-                  borderRadius: 10,
+                  border: isSelected ? '3px solid #007bff' : '1px solid #ccc',
+                  borderRadius: 14,
                   cursor: 'pointer',
                   overflow: 'hidden',
                   background: isSelected ? '#e9f5ff' : '#fff',
-                  boxShadow: isSelected ? '0 0 10px rgba(0,123,255,0.5)' : '0 1px 4px rgba(0,0,0,0.1)'
+                  boxShadow: isSelected ? '0 0 10px rgba(0,123,255,0.5)' : '0 2px 6px rgba(0,0,0,0.1)'
                 }}
               >
                 <img
                   src={`/images/options/${fileName}.jpg`}
                   alt={option}
-                  style={{ width: "100%", height: 100, objectFit: "cover" }}
+                  style={{ width: "100%", height: 200, objectFit: "cover" }}
                 />
-                <div style={{ padding: 10, textAlign: "center", fontWeight: 500 }}>{option}</div>
+                <div style={{ padding: 14, fontSize: 18, fontWeight: 600, textAlign: "center" }}>{option}</div>
               </div>
             );
           })}
@@ -209,9 +198,11 @@ const MicrocementForm = () => {
       {/* Navigation buttons */}
       <div style={{ display: "flex", justifyContent: "space-between", marginTop: 30 }}>
         <button onClick={handlePrevStep} disabled={currentStep === 0}>Back</button>
-        <button onClick={handleNextStep} disabled={!isValid()}>
-          {currentStep === formSteps.length - 1 ? "Submit" : "Next"}
-        </button>
+        {step.type !== 'radio' && (
+          <button onClick={handleNextStep} disabled={!isValid()}>
+            {currentStep === formSteps.length - 1 ? "Submit" : "Next"}
+          </button>
+        )}
       </div>
 
       <div style={{ marginTop: 20, textAlign: "center", fontSize: 14 }}>
